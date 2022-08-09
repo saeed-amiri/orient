@@ -4,7 +4,6 @@ import read_lmp_data as relmp
 from colors_text import TextColor as bcolors
 
 
-
 class Doc:
     """read data files from LAMMPS and give spatial orientation.
     It will give water orientation,
@@ -31,7 +30,8 @@ class Data:
 
         water_df = self.get_water_df(obj.Atoms_df)
         box = self.get_box(obj)
-        self.get_angles(water_df, box)
+        water_df = self.fix_pbc(water_df, box)
+        self.get_angles(water_df)
         del obj
         return water_df
 
@@ -47,9 +47,23 @@ class Data:
         del df
         return water_df
 
-    def get_angles(self,
-                   df: pd.DataFrame,
-                   box: tuple[float, float, float]) -> None:
+    def fix_pbc(self,
+                df: pd.DataFrame,
+                box: tuple[float, float, float]) -> pd.DataFrame:
+        """apply the correction of the periodic boundry condition"""
+        for i, row in df.iterrows():
+            if row['nx'] != 0:
+                df.iloc[i]['x'] += box[0]*row['nx']
+                df.iloc[i]['nx'] = 0
+            if row['ny'] != 0:
+                df.iloc[i]['y'] += box[1]*row['ny']
+                df.iloc[i]['ny'] = 0
+            if row['nz'] != 0:
+                df.iloc[i]['z'] += box[2]*row['nz']
+                df.iloc[i]['nz'] = 0
+        return df
+
+    def get_angles(self, df: pd.DataFrame) -> None:
         """return angle of the moles"""
         # get the mols index list
         mol_list: list[int]  # index for mols of the water molecules
