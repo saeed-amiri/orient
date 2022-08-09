@@ -18,5 +18,4 @@ class Doc:
 
 fname = sys.argv[1]
 data = relmp.ReadData(fname)
-water = orient.Data(data.Atoms_df)
-
+water = orient.Data(data)
