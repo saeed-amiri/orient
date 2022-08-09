@@ -50,7 +50,8 @@ class Data:
     def fix_pbc(self,
                 df: pd.DataFrame,
                 box: tuple[float, float, float]) -> pd.DataFrame:
-        """apply the correction of the periodic boundry condition"""
+        """apply the correction of the periodic boundry condition
+        then, set the nx, ny, nz equal to zero"""
         for i, row in df.iterrows():
             if row['nx'] != 0:
                 df.iloc[i]['x'] += box[0]*row['nx']
@@ -68,9 +69,11 @@ class Data:
         # get the mols index list
         mol_list: list[int]  # index for mols of the water molecules
         mol_list = list(set(df['mol']))
+        angle_list: list[float] = []  # angles for each mol
         for mol in mol_list:
             row = df.loc[df['mol'] == mol]
-            x, y, z = row['x'], row['y'], row['z']
+            angle_list.append(self.mk_vectors(row))
+        print(np.sum(angle_list)/len(angle_list)*180/np.pi)
 
     def get_box(self, obj: relmp.ReadData) -> tuple[float, float, float]:
         """get the box length in x, y, z direction"""
@@ -79,3 +82,30 @@ class Data:
         boxz: float = np.abs(obj.Zlim[1] - obj.Zlim[0])
         del obj
         return boxx, boxy, boxz
+
+    def mk_vectors(self, df: pd.DataFrame) -> float:
+        """get each molecule, and return its angle"""
+        h_index = 1
+        for i, row in df.iterrows():
+            x, y, z = row['x'], row['y'], row['z']
+            if row['typ'] == 4:
+                orgin = np.array([x, y, z])
+            elif row['typ'] == 5:
+                if h_index == 1:
+                    h1 = np.array([x, y, z])
+                    h_index += 1
+                else:
+                    h2 = np.array([x, y, z])
+        v1: np.array = orgin-h1  # vector from oxygen towards hydrogen
+        v2: np.array = orgin-h2  # vector from oxygen towards hydrogen
+        return self.angle_between_vecs(v1, v2)
+
+    def unit_vector(self, vector: np.array) -> np.array:
+        """ Returns the unit vector of the vector.  """
+        return vector / np.linalg.norm(vector)
+
+    def angle_between_vecs(self, v1: np.array, v2: np.array) -> float:
+        """ Returns the angle in radians between vectors 'v1' and 'v2'"""
+        v1_u: np.array = self.unit_vector(v1)
+        v2_u: np.array = self.unit_vector(v2)
+        return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
