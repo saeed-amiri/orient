@@ -19,7 +19,7 @@ class Data:
     """get data and calculate the orientation for water"""
     def __init__(self, obj: relmp.ReadData) -> None:
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
-              f'\tGetting water moleculs{bcolors.ENDC}')
+              f'\tGetting water molecules{bcolors.ENDC}')
         self.get_water(obj)
         del obj
 
@@ -77,20 +77,21 @@ class Data:
         average_angles = np.sum(angle_list)/len(angle_list)
         print(f'{bcolors.OKGREEN}\tAverage angle = '
               f'{average_angles:.4f} [rad] '
-              f'(= {np.degrees(average_angles):.4f}[deg])\n')
+              f'(= {np.degrees(average_angles):.4f} [deg]){bcolors.ENDC}\n')
+        del df
 
     def get_box(self, obj: relmp.ReadData) -> tuple[float, float, float]:
         """get the box length in x, y, z direction"""
-        boxx: float = np.abs(obj.Xlim[1] - obj.Xlim[0])
-        boxy: float = np.abs(obj.Ylim[1] - obj.Ylim[0])
-        boxz: float = np.abs(obj.Zlim[1] - obj.Zlim[0])
+        boxx: float = np.abs(obj.Xlim[1] - obj.Xlim[0])  # length in x
+        boxy: float = np.abs(obj.Ylim[1] - obj.Ylim[0])  # length in y
+        boxz: float = np.abs(obj.Zlim[1] - obj.Zlim[0])  # length in z
         del obj
         return boxx, boxy, boxz
 
     def mk_vectors(self, df: pd.DataFrame) -> float:
         """get each molecule, and return its angle"""
         h_index = 1
-        for i, row in df.iterrows():
+        for _, row in df.iterrows():
             x, y, z = row['x'], row['y'], row['z']
             if row['typ'] == 4:
                 orgin = np.array([x, y, z])
@@ -102,6 +103,7 @@ class Data:
                     h2 = np.array([x, y, z])
         v1: np.array = orgin-h1  # vector from oxygen towards hydrogen
         v2: np.array = orgin-h2  # vector from oxygen towards hydrogen
+        del df
         return self.angle_between_vecs(v1, v2)
 
     def unit_vector(self, vector: np.array) -> np.array:
