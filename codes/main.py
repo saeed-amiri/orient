@@ -1,6 +1,7 @@
 import sys
 import read_lmp_data as relmp
 import orient
+import read_json as rejs
 
 
 class Doc:
@@ -10,7 +11,7 @@ class Doc:
     Input:
         Two main input must be abale to read:
             1- Parameter:
-                - Some sort of inputs to get the types of the atoms, ...
+                - JSON file to get the types, ... of the atoms
             2- Data files:
                 - data: from `write_data` command
                 - traj: from `dump` command
