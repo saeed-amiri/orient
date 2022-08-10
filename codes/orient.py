@@ -73,7 +73,11 @@ class Data:
         for mol in mol_list:
             row = df.loc[df['mol'] == mol]
             angle_list.append(self.mk_vectors(row))
-        print(np.sum(angle_list)/len(angle_list)*180/np.pi)
+        average_angles: float  # Average of angles of the data file
+        average_angles = np.sum(angle_list)/len(angle_list)
+        print(f'{bcolors.OKGREEN}\tAverage angle = '
+              f'{average_angles:.4f} [rad] '
+              f'(= {np.degrees(average_angles):.4f}[deg])\n')
 
     def get_box(self, obj: relmp.ReadData) -> tuple[float, float, float]:
         """get the box length in x, y, z direction"""
