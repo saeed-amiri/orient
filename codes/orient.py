@@ -37,11 +37,14 @@ class Data:
 
     def get_water_df(self, df: pd.DataFrame) -> pd.DataFrame:
         """get all the atoms and return water as a DataFrame"""
-        # Sort the data frame
+        # Sort the dataframe
         df.sort_values(by=['atom_id'], axis=0, inplace=True)
-        # Get O and Hydrogen
+        # Get Oxygen and Hydrogens
         # This should be fixed !!
-        water_df = df.loc[(df['typ'] == 4) | (df['typ'] == 5)].copy()
+        OXYGEN: int = 4  # atom type for oxygen
+        HYDROGEN: int = 5  # atom type for hydrogen
+        water_df = df.loc[(df['typ'] == OXYGEN) |
+                          (df['typ'] == HYDROGEN)].copy()
         water_df.reset_index(inplace=True)
         water_df.drop(['index'], inplace=True, axis=1)
         del df
