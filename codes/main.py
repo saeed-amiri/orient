@@ -9,8 +9,11 @@ class Doc:
     For decane it will give the parameter order.
     Input:
         Two main input must be abale to read:
-            data: from `write_data` command
-            traj: from `dump` command
+            1- Parameter:
+                - Some sort of inputs to get the types of the atoms, ...
+            2- Data files:
+                - data: from `write_data` command
+                - traj: from `dump` command
     Output:
         Files contains informations
     """
