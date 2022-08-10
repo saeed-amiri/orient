@@ -17,9 +17,14 @@ class Doc:
                 - traj: from `dump` command
     Output:
         Files contains informations
+
+    Usage:
+        python[version] main.py file.data file.json
     """
 
 
-fname = sys.argv[1]
+fname = sys.argv[1]  # The data file
+jname: str = sys.argv[2]  # The parameters file (json file)
+param = rejs.ReadJson(jname)
 data = relmp.ReadData(fname)
 water = orient.Data(data)
