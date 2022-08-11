@@ -25,8 +25,6 @@ class Doc:
 
 
 files = get_prompt.Prompts()
-fname = sys.argv[1]  # The data file
-jname: str = sys.argv[2]  # The parameters file (json file)
-param = rejs.ReadJson(jname)
-data = relmp.ReadData(fname)
+param = rejs.ReadJson(files.jname)
+data = relmp.ReadData(files.fname)
 water = orient.Data(data)
