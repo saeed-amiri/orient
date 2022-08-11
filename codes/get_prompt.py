@@ -10,19 +10,19 @@ class Doc:
     Select which one of the prompt inputs is a data file and which is
     parameters.
     Ex. of input:
-        style: angle
-        json = YY.data
+        style = angle
+        JSON = YY.data
         data = XX.data
-        atoms: O H
-    style should be chossen form:
+        atoms = O H
+    style should be chosen from:
         angle: Calculate the HOH angle for water molecules.
         gyration: Calculate the gyration radius of the decane or 
         surfactants.
-    json file MUST have JSON extension and it written by the combination
-    script. Contains the name, type and mass of each atom.
-    data file must have one the follwing extenstions:
+    JSON file MUST have JSON extension, and the combination script wr-
+    ites it. It contains the name, type, and mass of each atom.
+    The data file must have one of the following extensions:
         data: written by write_data command in LAMMPS
-        dump or lammpstrj written by dump command in LAMMPS
+        dump or lammpstrj was written by dump command in LAMMPS
 
         Usage example:
             python(V.v) main.py input
@@ -41,15 +41,15 @@ class Prompts:
             fname = sys.argv[1]
         except IndexError:
             exit(f'\t{bcolors.FAIL}Error! Input file needed!\n'
-                 f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+                 f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         if not os.path.exists(fname):
             exit(f'\t{bcolors.FAIL}Error! File `{fname}` '
                  f'does not exist{bcolors.ENDC}\n'
-                 f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+                 f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         if os.path.getsize(fname) <= 0:
             exit(f'\t{bcolors.FAIL}Error! File `{fname}` '
                  f'is empty{bcolors.ENDC}\n'
-                 f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+                 f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
 
     def get_names(self) -> None:
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
@@ -76,7 +76,7 @@ class Prompts:
         else:
             exit(f'{bcolors.FAIL}\tError! The selected style is not '
                  f'valid, choose from: {l_styles}{bcolors.ENDC}\n'
-                 f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+                 f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return style
 
     def check_inputs(self) -> tuple[str, str]:
@@ -87,7 +87,7 @@ class Prompts:
         if nfiles < 2:
             exit(f'\t{bcolors.FAIL}Error! at least two input files; Ex.:\n'
                  f'\tfile.data file.json{bcolors.ENDC}\n'
-                 f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+                 f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         elif nfiles > 2:
             print(f'\t{bcolors.WARNING}Warning: Too many input files!\n'
                   f'\t{f_list[2:]} wont be process\n')
@@ -101,11 +101,11 @@ class Prompts:
             if not os.path.exists(f):
                 exit(f'\t{bcolors.FAIL}Error! File `{f}` '
                      f'does not exist{bcolors.ENDC}\n'
-                     f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+                     f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
             if os.path.getsize(f) <= 0:
                 exit(f'\t{bcolors.FAIL}Error! File `{f}` '
                      f'is empty{bcolors.ENDC}\n'
-                     f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+                     f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
 
     def check_extensions(self, f1: str, f2: str) -> tuple[str, str]:
         """check if the files have the right extensions"""
@@ -132,5 +132,5 @@ class Prompts:
         if not (param_flag and data_flag):
             exit(f'{bcolors.FAIL}Error! The input file were not right '
                  f'ones!{bcolors.ENDC}\n'
-                 f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+                 f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return fname, jname
