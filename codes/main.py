@@ -1,4 +1,3 @@
-import sys
 import get_prompt
 import read_lmp_data as relmp
 import orient
