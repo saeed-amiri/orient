@@ -22,9 +22,11 @@ class Prompts:
     def get_names(self) -> None:
         f1: str  # First input file
         f2: str  # First input file
+        self.fname: str  # Name of the data file
+        self.jname: str  # Name of the parameters file (JSON)
         f1, f2 = self.check_inputs()
         self.check_exist(f1, f2)
-        self.check_extensions(f1, f2)
+        self.fname, self.jname = self.check_extensions(f1, f2)
 
     def check_inputs(self) -> tuple[str, str]:
         """check if there is enough inputs"""
@@ -49,6 +51,28 @@ class Prompts:
             if os.path.getsize(f) <= 0:
                 exit(f'\t{bcolors.FAIL}Error! File `{f}` is empty\n')
 
-
-    def check_extensions(self, f1: str, f2: str) -> None:
+    def check_extensions(self, f1: str, f2: str) -> tuple[str, str]:
         """check if the files have the right extensions"""
+        f1_ext: str  # Extension of the f1
+        f2_ext: str  # Extension of the f2
+        data_ext: list[str]  # List of type of the data file
+        param_ext: list[str]  # List of type of the parameter file
+        fname: str  # Name of the data file
+        jname: str  # Name of the parameter file
+        data_flag: bool = False  # If we have the data file
+        param_flag: bool = False  # If we have the param file
+
+        f1_ext = f1.split('.')[1].strip()
+        f2_ext = f2.split('.')[1].strip()
+        data_ext = ['data', 'dump', 'trj']
+        param_ext = ['json']
+        for f in [f1_ext, f2_ext]:
+            if f in data_ext:
+                fname = f
+                data_flag = True
+            if f in param_ext:
+                jname = f
+                param_flag = True
+        if not (param_flag and data_flag):
+            exit(f'{bcolors.FAIL}Error! The input file were not right ones!\n')
+        return fname, jname
