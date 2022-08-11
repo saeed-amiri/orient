@@ -4,28 +4,52 @@ from colors_text import TextColor as bcolors
 
 
 class Doc:
-    """Read the prompt inputs:
+    """Read the prompt input file:
+    read the file which contains information about what the script must
+    do:
     Select which one of the prompt inputs is a data file and which is
     parameters.
-    Inputs:
-        The style of the caculatoin must be defeined first, between:
-            angle: the angle between water molecules
-            gyration: the gyration of the decane molecules
-
-        The input file for data should either have: data or dump or
-        traj as an extension.
-        The input for the parameters must have a JSON extension
-        The order does not matter
+    Ex. of input:
+        style: angle
+        json = YY.data
+        data = XX.data
+        atoms: O H
+    style should be chossen form:
+        angle: Calculate the HOH angle for water molecules.
+        gyration: Calculate the gyration radius of the decane or 
+        surfactants.
+    json file MUST have JSON extension and it written by the combination
+    script. Contains the name, type and mass of each atom.
+    data file must have one the follwing extenstions:
+        data: written by write_data command in LAMMPS
+        dump or lammpstrj written by dump command in LAMMPS
 
         Usage example:
-            python(V.v) main.py style XX.data YY.json
+            python(V.v) main.py input
         """
 
 
 class Prompts:
     """get the files names"""
     def __init__(self) -> None:
+        self.get_infos()
         self.get_names()
+
+    def get_infos(self) -> None:
+        """read the prompt file to get initial information"""
+        try:
+            fname = sys.argv[1]
+        except IndexError:
+            exit(f'\t{bcolors.FAIL}Error! Input file needed!\n'
+                 f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+        if not os.path.exists(fname):
+            exit(f'\t{bcolors.FAIL}Error! File `{fname}` '
+                 f'does not exist{bcolors.ENDC}\n'
+                 f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
+        if os.path.getsize(fname) <= 0:
+            exit(f'\t{bcolors.FAIL}Error! File `{fname}` '
+                 f'is empty{bcolors.ENDC}\n'
+                 f'{bcolors.OKGREEN}{Doc.__doc__}{bcolors.ENDC}\n')
 
     def get_names(self) -> None:
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
