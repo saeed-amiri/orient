@@ -1,4 +1,5 @@
 import sys
+import get_prompt
 import read_lmp_data as relmp
 import orient
 import read_json as rejs
@@ -23,6 +24,7 @@ class Doc:
     """
 
 
+files = get_prompt.Prompts()
 fname = sys.argv[1]  # The data file
 jname: str = sys.argv[2]  # The parameters file (json file)
 param = rejs.ReadJson(jname)
