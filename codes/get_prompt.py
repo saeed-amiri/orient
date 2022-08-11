@@ -23,6 +23,7 @@ class Prompts:
         f1: str  # First input file
         f2: str  # First input file
         f1, f2 = self.check_inputs()
+        self.check_exist(f1, f2)
         self.check_extensions(f1, f2)
 
     def check_inputs(self) -> tuple[str, str]:
@@ -34,11 +35,20 @@ class Prompts:
             exit(f'\t{bcolors.FAIL}Error! at least two input files; Ex.:\n'
                  f'\tfile.data file.json{bcolors.ENDC}\n')
         elif nfiles > 2:
-            print(f'\t{bcolors.OKBLUE}Warning: Too many input files!\n'
-                  f'\t {f_list[3:]} wont be process\n')
+            print(f'\t{bcolors.WARNING}Warning: Too many input files!\n'
+                  f'\t{f_list[2:]} wont be process\n')
         else:
             pass
         return f_list[0], f_list[1]
+
+    def check_exist(self, f1, f2) -> None:
+        """check if the files are there"""
+        for f in [f1, f2]:
+            if not os.path.exists(f):
+                exit(f'\t{bcolors.FAIL}Error! File `{f}` does not exist\n')
+            if os.path.getsize(f) <= 0:
+                exit(f'\t{bcolors.FAIL}Error! File `{f}` is empty\n')
+
 
     def check_extensions(self, f1: str, f2: str) -> None:
         """check if the files have the right extensions"""
