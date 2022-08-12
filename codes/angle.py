@@ -28,7 +28,7 @@ class Angle:
         del obj, files
 
     def get_water(self,
-                  obj: relmp.ReadData,
+                  obj: relmp.ReadData,  # Atoms, bonds, ... from data file
                   files: get_prompt.Prompts) -> None:
         """get all the atoms and return water mols"""
         water_df: pd.DataFrame  # water part in the dataframe
@@ -84,7 +84,7 @@ class Angle:
         return water_df
 
     def fix_pbc(self,
-                df: pd.DataFrame,
+                df: pd.DataFrame,  # All the water atoms coordinates
                 box: tuple[float, float, float]) -> pd.DataFrame:
         """apply the correction of the periodic boundry condition
         then, set the nx, ny, nz equal to zero"""
@@ -100,7 +100,9 @@ class Angle:
                 df.iloc[i]['nz'] = 0
         return df
 
-    def get_angles(self, df: pd.DataFrame) -> None:
+    def get_angles(self,
+                   df: pd.DataFrame  # All the water atoms coordinates
+                   ) -> None:
         """return angle of the moles"""
         # get the mols index list
         mol_list: list[int]  # index for mols of the water molecules
@@ -116,7 +118,9 @@ class Angle:
               f'(= {np.degrees(average_angles):.4f} [deg]){bcolors.ENDC}\n')
         del df
 
-    def get_box(self, obj: relmp.ReadData) -> tuple[float, float, float]:
+    def get_box(self,
+                obj: relmp.ReadData  # Atoms, bonds, ... from data file
+                ) -> tuple[float, float, float]:
         """get the box length in x, y, z direction"""
         boxx: float = np.abs(obj.Xlim[1] - obj.Xlim[0])  # length in x
         boxy: float = np.abs(obj.Ylim[1] - obj.Ylim[0])  # length in y
@@ -124,7 +128,9 @@ class Angle:
         del obj
         return boxx, boxy, boxz
 
-    def mk_vectors(self, df: pd.DataFrame) -> float:
+    def mk_vectors(self,
+                   df: pd.DataFrame  # One molecule of the water
+                   ) -> float:
         """get each molecule, and return its angle"""
         h_index = 1
         for _, row in df.iterrows():
@@ -142,11 +148,16 @@ class Angle:
         del df
         return self.angle_between_vecs(v1, v2)
 
-    def unit_vector(self, vector: np.array) -> np.array:
+    def unit_vector(self,
+                    vector: np.array  # Any 1\times 2 array as a vector
+                    ) -> np.array:
         """ Returns the unit vector of the vector.  """
         return vector / np.linalg.norm(vector)
 
-    def angle_between_vecs(self, v1: np.array, v2: np.array) -> float:
+    def angle_between_vecs(self,
+                           v1: np.array,  # Vector from O to H
+                           v2: np.array  # Vector from O to H
+                           ) -> float:
         """ Returns the angle in radians between vectors 'v1' and 'v2'"""
         v1_u: np.array = self.unit_vector(v1)
         v2_u: np.array = self.unit_vector(v2)

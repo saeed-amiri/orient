@@ -70,7 +70,9 @@ class Prompts:
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return fname
 
-    def read_infos(self, fname: str) -> tuple[str, list[str], str]:
+    def read_infos(self,
+                   fname: str  # The input file from prompt
+                   ) -> tuple[str, list[str], str]:
         """read info file to get the information for the calculation"""
         line: str  # Each line of the file
         style: str  # The style of the calculation
@@ -108,7 +110,9 @@ class Prompts:
         files = self.check_files(files)
         return style, files, atoms
 
-    def get_style(self, style: str) -> str:
+    def get_style(self,
+                  style: str  # The style written in the info file
+                  ) -> str:
         """get the style of the caculation"""
         l_styles: list[str]  # List of available styles
         l_styles = ['angle', 'gyration']
@@ -120,7 +124,9 @@ class Prompts:
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return style
 
-    def check_files(self, f_list: list[str]) -> list[str]:
+    def check_files(self,
+                    f_list: list[str]  # File names in info file
+                    ) -> list[str]:
         """check if there is enough input files"""
         nfiles: int = len(f_list)
         if nfiles < 2:
@@ -135,7 +141,9 @@ class Prompts:
         self.check_exist(f_list)
         return f_list[:2]
 
-    def check_exist(self, f_list: list[str]) -> None:
+    def check_exist(self,
+                    f_list: list[str]  # File names in info file
+                    ) -> None:
         """check if the files are there"""
         for f in f_list:
             if not os.path.exists(f):
@@ -147,7 +155,9 @@ class Prompts:
                      f'is empty{bcolors.ENDC}\n'
                      f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
 
-    def check_extensions(self, f_list: list[str]) -> tuple[str, str]:
+    def check_extensions(self,
+                         f_list: list[str]  # File names in info file
+                         ) -> tuple[str, str]:
         """check if the files have the right extensions"""
         f1_ext: str  # Extension of the f1
         f2_ext: str  # Extension of the f2
@@ -176,7 +186,9 @@ class Prompts:
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return fname, jname
 
-    def get_atoms(self, atoms: str) -> list[str]:
+    def get_atoms(self,
+                  atoms: str  # The atoms name from atoms line of the info file
+                  ) -> list[str]:
         """get the defeind atoms in the info fils"""
         atom_list: list[str]  # To return as a list
         atom_list = atoms.split(' ')
