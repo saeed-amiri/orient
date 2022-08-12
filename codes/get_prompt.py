@@ -11,12 +11,12 @@ class Doc:
     parameters.
     Ex. of input:
         style = angle
-        JSON = YY.data
+        json = YY.data
         data = XX.data
         atoms = O H
     style should be chosen from:
         angle: Calculate the HOH angle for water molecules.
-        gyration: Calculate the gyration radius of the decane or 
+        gyration: Calculate the gyration radius of the decane or
         surfactants.
     JSON file MUST have JSON extension, and the combination script wr-
     ites it. It contains the name, type, and mass of each atom.
@@ -33,9 +33,15 @@ class Prompts:
     """get the files names"""
     def __init__(self) -> None:
         self.get_infos()
-        self.get_names()
+        # self.get_names()
 
     def get_infos(self) -> None:
+        """read the prompt file to get initial information"""
+        fname: str  # Name of the input file
+        fname = self.check_infos()
+        self.read_infos(fname)
+
+    def check_infos(self) -> str:
         """read the prompt file to get initial information"""
         try:
             fname = sys.argv[1]
@@ -50,6 +56,40 @@ class Prompts:
             exit(f'\t{bcolors.FAIL}Error! File `{fname}` '
                  f'is empty{bcolors.ENDC}\n'
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
+        return fname
+
+    def read_infos(self, fname: str) -> tuple[str, list[str], str]:
+        """read info file to get the information for the calculation"""
+        line: str  # Each line of the file
+        style: str  # The style of the calculation
+        files: list[str] = []  # To save the input files
+        atoms: str  # The name of the atoms to consider
+        atoms_flag: bool = False  # Check if there are atoms defeind
+        files_flag: bool = False  # Check if there are files defeind
+        style_flage: bool = False  # Check if there is style keyword
+        with open(fname, 'r') as f:
+            while True:
+                line = f.readline()
+                if line.strip().startswith('data') or \
+                   line.strip().startswith('json'):
+                    f_i = line.split('=')[1].strip()
+                    files.append(f_i)
+                elif line.strip().startswith('style'):
+                    style = line.split('=')[1].strip()
+                    style_flage = True
+                elif line.strip().startswith('atoms'):
+                    atoms = line.split('=')[1].strip()
+                    atoms_flag = True
+                if not line:
+                    break
+        if files:
+            files_flag = True
+        for flag in (atoms_flag, files_flag, style_flage):
+            if not flag:
+                exit(f'\t{bcolors.FAIL}Error in input file: `{fname}`:'
+                     f'{bcolors.ENDC}\n'
+                     f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
+        return style, files, atoms
 
     def get_names(self) -> None:
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
@@ -134,3 +174,7 @@ class Prompts:
                  f'ones!{bcolors.ENDC}\n'
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return fname, jname
+
+
+if __name__ == '__main__':
+    files = Prompts()
