@@ -33,9 +33,10 @@ class Angle:
         """get all the atoms and return water mols"""
         water_df: pd.DataFrame  # water part in the dataframe
         box: tuple[float, float, float]  # Length of the box in x, y, z
+        atom_type: list[int]  # List of the atoms type in the data file
         param = rejs.ReadJson(files.jname)
-        self.get_types(param.df, files.atoms)
-        water_df = self.get_water_df(obj.Atoms_df)
+        atom_type = self.get_types(param.df, files.atoms)
+        water_df = self.get_water_df(obj.Atoms_df, atom_type)
         box = self.get_box(obj)
         water_df = self.fix_pbc(water_df, box)
         self.get_angles(water_df)
@@ -44,28 +45,33 @@ class Angle:
 
     def get_types(self,
                   df: pd.DataFrame,
-                  atoms: list[str]) -> None:
+                  atoms: list[str]) -> list[int]:
         """return the type of each atom in info file"""
         param_atoms: list[str]  # Type of atoms in jname
         param_atoms = list(df['name'])
+        atom_types: list[int] = []  # List of the types of the atoms
         if not all(x in param_atoms for x in atoms):
             exit(f'\t{bcolors.FAIL}Error! There is no type for one or'
                  f' more of atoms: `{atoms}` in json file{bcolors.ENDC}\n')
-        
+        for atom in atoms:
+            i_type = int(df.loc[df['name'] == atom]['typ'])
+            atom_types.append(i_type)
+        return atom_types
 
-    def get_water_df(self, df: pd.DataFrame) -> pd.DataFrame:
+    def get_water_df(self,
+                     df: pd.DataFrame,
+                     atom_type: list[int]) -> pd.DataFrame:
         """get all the atoms and return water as a DataFrame"""
+        df_list: pd.DataFrame = []  # List of dataframe to get each type
+        # Get selected types information
+        for i_type in atom_type:
+            df_list.append(df.loc[(df['typ'] == i_type)])
+        water_df = pd.concat(df_list)
         # Sort the dataframe
-        df.sort_values(by=['atom_id'], axis=0, inplace=True)
-        # Get Oxygen and Hydrogens
-        # This should be fixed !!
-        OXYGEN: int = 4  # atom type for oxygen
-        HYDROGEN: int = 5  # atom type for hydrogen
-        water_df = df.loc[(df['typ'] == OXYGEN) |
-                          (df['typ'] == HYDROGEN)].copy()
+        water_df.sort_values(by=['atom_id'], axis=0, inplace=True)
         water_df.reset_index(inplace=True)
         water_df.drop(['index'], inplace=True, axis=1)
-        del df
+        del df, df_list
         return water_df
 
     def fix_pbc(self,
