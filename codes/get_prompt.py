@@ -181,6 +181,7 @@ class Prompts:
         atom_list: list[str]  # To return as a list
         atom_list = atoms.split(' ')
         atom_list = [atom for atom in atom_list if atom]
+        atom_list = self.capitaliz_names(atom_list)
         if len(atom_list) != len(set(atom_list)):
             print(f'{bcolors.WARNING}\tThere is a duplicated atom in '
                   f'list: `{atom_list}`, Ignored!')
@@ -190,6 +191,12 @@ class Prompts:
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return atom_list
 
+    def capitaliz_names(self,
+                        names: list[str]  # List of the atoms name,...
+                        ) -> list[str]:
+        """make sure all the name are capitalized"""
+        names = [name.upper() for name in names]
+        return names
 
 if __name__ == '__main__':
     files = Prompts()
