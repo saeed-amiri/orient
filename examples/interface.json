@@ -1,0 +1,35 @@
+{
+	"files": [
+	{
+		"file": "interface.data",
+		"atoms": 
+		[
+    {
+        "mass": 12.011,
+        "typ": 1,
+        "name": "CH3"
+    },
+    {
+        "mass": 12.011,
+        "typ": 2,
+        "name": "CH2"
+    },
+    {
+        "mass": 1.008,
+        "typ": 3,
+        "name": "HC"
+    },
+    {
+        "mass": 15.9994,
+        "typ": 4,
+        "name": "O"
+    },
+    {
+        "mass": 1.008,
+        "typ": 5,
+        "name": "H"
+    }
+]
+	}
+			]
+}
