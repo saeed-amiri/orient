@@ -1,7 +1,6 @@
 import get_prompt
 import read_lmp_data as relmp
 import angle
-import read_json as rejs
 
 
 class Doc:
@@ -24,9 +23,9 @@ class Doc:
 
 
 files = get_prompt.Prompts()
-param = rejs.ReadJson(files.jname)
+
 if files.style == 'angle':
     data = relmp.ReadData(files.fname)
+    water = angle.Data(data)
 elif files.style == 'gyration':
     pass
-water = angle.Data(data)

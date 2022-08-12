@@ -54,6 +54,7 @@ class Prompts:
 
     def check_infos(self) -> str:
         """read the prompt file to get initial information"""
+        fname: str  # Name of the input file from prompt
         try:
             fname = sys.argv[1]
         except IndexError:
@@ -73,8 +74,8 @@ class Prompts:
         """read info file to get the information for the calculation"""
         line: str  # Each line of the file
         style: str  # The style of the calculation
+        atoms: str  # The name of the atoms to be consider
         files: list[str] = []  # To save the input files
-        atoms: str  # The name of the atoms to consider
         atoms_flag: bool = False  # Check if there are atoms defeind
         files_flag: bool = False  # Check if there are files defeind
         style_flage: bool = False  # Check if there is style keyword
@@ -111,7 +112,7 @@ class Prompts:
         """get the style of the caculation"""
         l_styles: list[str]  # List of available styles
         l_styles = ['angle', 'gyration']
-        if style in l_styles:
+        if style and style in l_styles:
             pass
         else:
             exit(f'{bcolors.FAIL}\tError! The selected style is not '
@@ -180,6 +181,9 @@ class Prompts:
         atom_list: list[str]  # To return as a list
         atom_list = atoms.split(' ')
         atom_list = [atom for atom in atom_list if atom]
+        if not atoms:
+            exit(f'{bcolors.FAIL}\tError! No atom(s) defined! {bcolors.ENDC}\n'
+                 f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return atom_list
 
 
