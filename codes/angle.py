@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import read_lmp_data as relmp
+import read_json as rejs
+import get_prompt
 from colors_text import TextColor as bcolors
 
 
@@ -15,25 +17,40 @@ class Doc:
     """
 
 
-class Data:
+class Angle:
     """get data and calculate the orientation for water"""
-    def __init__(self, obj: relmp.ReadData) -> None:
+    def __init__(self,
+                 obj: relmp.ReadData,
+                 files: get_prompt.Prompts) -> None:
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tGetting water molecules{bcolors.ENDC}')
-        self.get_water(obj)
-        del obj
+        self.get_water(obj, files)
+        del obj, files
 
-    def get_water(self, obj: relmp.ReadData) -> None:
+    def get_water(self,
+                  obj: relmp.ReadData,
+                  files: get_prompt.Prompts) -> None:
         """get all the atoms and return water mols"""
         water_df: pd.DataFrame  # water part in the dataframe
         box: tuple[float, float, float]  # Length of the box in x, y, z
-
+        param = rejs.ReadJson(files.jname)
+        self.get_types(param.df, files.atoms)
         water_df = self.get_water_df(obj.Atoms_df)
         box = self.get_box(obj)
         water_df = self.fix_pbc(water_df, box)
         self.get_angles(water_df)
         del obj
         return water_df
+
+    def get_types(self,
+                  df: pd.DataFrame,
+                  atoms: list[str]) -> None:
+        """return the type of each atom in info file"""
+        param_atoms: list[str]  # Type of atoms in jname
+        param_atoms = list(df['name'])
+        if not all(x in param_atoms for x in atoms):
+            exit(f'\t{bcolors.FAIL}Error! There is no type for one or'
+                 f' more of atoms: `{atoms}` in json file{bcolors.ENDC}\n')
 
     def get_water_df(self, df: pd.DataFrame) -> pd.DataFrame:
         """get all the atoms and return water as a DataFrame"""
