@@ -181,6 +181,7 @@ class Prompts:
         atom_list: list[str]  # To return as a list
         atom_list = atoms.split(' ')
         atom_list = [atom for atom in atom_list if atom]
+        atom_list = list(dict.fromkeys(atom_list))  # Drop the duplicates
         if not atoms:
             exit(f'{bcolors.FAIL}\tError! No atom(s) defined! {bcolors.ENDC}\n'
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
