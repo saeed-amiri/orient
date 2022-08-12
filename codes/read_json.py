@@ -27,7 +27,7 @@ class ReadJson:
         df = self.capitaliz_names(df)
         del data
         return df
-    
+
     def capitaliz_names(self,
                         df: pd.DataFrame  # DataFrame of the atoms name,...
                         ) -> pd.DataFrame:

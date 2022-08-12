@@ -198,5 +198,6 @@ class Prompts:
         names = [name.upper() for name in names]
         return names
 
+
 if __name__ == '__main__':
     files = Prompts()
