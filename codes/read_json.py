@@ -24,6 +24,13 @@ class ReadJson:
         with open(fname, 'r') as f:
             data = json.load(f)
         df = pd.DataFrame.from_dict(data["files"][0]['atoms'])
-        self.param = data
+        df = self.capitaliz_names(df)
         del data
+        return df
+    
+    def capitaliz_names(self,
+                        df: pd.DataFrame  # DataFrame of the atoms name,...
+                        ) -> pd.DataFrame:
+        """make sure all the name are capitalized"""
+        df['name'] = [name.upper() for name in df['name']]
         return df
