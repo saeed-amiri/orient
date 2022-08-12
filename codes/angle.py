@@ -51,6 +51,7 @@ class Angle:
         if not all(x in param_atoms for x in atoms):
             exit(f'\t{bcolors.FAIL}Error! There is no type for one or'
                  f' more of atoms: `{atoms}` in json file{bcolors.ENDC}\n')
+        
 
     def get_water_df(self, df: pd.DataFrame) -> pd.DataFrame:
         """get all the atoms and return water as a DataFrame"""
