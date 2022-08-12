@@ -44,23 +44,32 @@ class Angle:
         return water_df
 
     def get_types(self,
-                  df: pd.DataFrame,
-                  atoms: list[str]) -> list[int]:
+                  df: pd.DataFrame,  # DataFrame of the atoms' name and mass
+                  atoms: list[str]  # atoms in the input files (sys.argv[1])
+                  ) -> list[int]:
         """return the type of each atom in info file"""
         param_atoms: list[str]  # Type of atoms in jname
+        self.OXYGEN: int  # type of Oxygen
+        self.HYDROGEN: int  # type of Hydrogen
         param_atoms = list(df['name'])
         atom_types: list[int] = []  # List of the types of the atoms
         if not all(x in param_atoms for x in atoms):
             exit(f'\t{bcolors.FAIL}Error! There is no type for one or'
                  f' more of atoms: `{atoms}` in json file{bcolors.ENDC}\n')
+        # This a messy way to do it but fine for now :))
         for atom in atoms:
             i_type = int(df.loc[df['name'] == atom]['typ'])
             atom_types.append(i_type)
+            if atom.casefold() == 'O'.casefold():
+                self.OXYGEN = i_type
+            elif atom.casefold() == 'H'.casefold():
+                self.HYDROGEN = i_type
         return atom_types
 
     def get_water_df(self,
-                     df: pd.DataFrame,
-                     atom_type: list[int]) -> pd.DataFrame:
+                     df: pd.DataFrame,  # Atoms_df from main data to analysis
+                     atom_type: list[int]  # Type of each atom (for water)
+                     ) -> pd.DataFrame:
         """get all the atoms and return water as a DataFrame"""
         df_list: pd.DataFrame = []  # List of dataframe to get each type
         # Get selected types information
@@ -120,9 +129,9 @@ class Angle:
         h_index = 1
         for _, row in df.iterrows():
             x, y, z = row['x'], row['y'], row['z']
-            if row['typ'] == 4:
+            if row['typ'] == self.OXYGEN:
                 orgin = np.array([x, y, z])
-            elif row['typ'] == 5:
+            elif row['typ'] == self.HYDROGEN:
                 if h_index == 1:
                     h1 = np.array([x, y, z])
                     h_index += 1
