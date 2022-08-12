@@ -33,7 +33,6 @@ class Prompts:
     """get the files names"""
     def __init__(self) -> None:
         self.get_infos()
-        # self.get_names()
 
     def get_infos(self) -> None:
         """read the prompt file to get initial information"""
@@ -47,9 +46,11 @@ class Prompts:
         style, files, atoms = self.read_infos(fname)
         self.fname, self.jname = self.check_extensions(files)
         self.style = self.get_style(style)
+        self.atoms = self.get_atoms(atoms)
         print(f'{bcolors.OKCYAN}\tstyle: `{self.style}`\n'
               f'\tdata: `{self.fname}`\n'
-              f'\tparamter: `{self.jname}`{bcolors.ENDC}\n')
+              f'\tparamter: `{self.jname}`\n'
+              f'\tatoms: `{" & ".join(self.atoms)}`{bcolors.ENDC}\n')
 
     def check_infos(self) -> str:
         """read the prompt file to get initial information"""
@@ -90,6 +91,10 @@ class Prompts:
                 elif line.strip().startswith('atoms'):
                     atoms = line.split('=')[1].strip()
                     atoms_flag = True
+                else:
+                    if line.strip():
+                        print(f'\t{bcolors.WARNING}Warning: Undefined '
+                              f'keyword: `{line}`, Ignored!{bcolors.ENDC}')
                 if not line:
                     break
         if files:
@@ -169,6 +174,13 @@ class Prompts:
                  f'ones!{bcolors.ENDC}\n'
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return fname, jname
+
+    def get_atoms(self, atoms: str) -> list[str]:
+        """get the defeind atoms in the info fils"""
+        atom_list: list[str]  # To return as a list
+        atom_list = atoms.split(' ')
+        atom_list = [atom for atom in atom_list if atom]
+        return atom_list
 
 
 if __name__ == '__main__':
