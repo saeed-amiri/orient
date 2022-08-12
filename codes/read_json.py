@@ -16,9 +16,9 @@ class Doc:
 class ReadJson:
     """read the json file"""
     def __init__(self, fname) -> None:
-        print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
-              f'\tReading parameter file: `{fname}`{bcolors.ENDC}\n')
-        self.get_param(fname)
+        print(f'{bcolors.OKCYAN}\t{self.__class__.__name__}:\n'
+              f'\t\tReading parameter file: `{fname}`{bcolors.ENDC}\n')
+        self.df = self.get_param(fname)
 
     def get_param(self, fname: str) -> pd.DataFrame:
         with open(fname, 'r') as f:

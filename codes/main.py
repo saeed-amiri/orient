@@ -26,6 +26,6 @@ files = get_prompt.Prompts()
 
 if files.style == 'angle':
     data = relmp.ReadData(files.fname)
-    water = angle.Data(data)
+    water = angle.Angle(data, files)
 elif files.style == 'gyration':
     pass
