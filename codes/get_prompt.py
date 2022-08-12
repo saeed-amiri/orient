@@ -80,7 +80,7 @@ class Prompts:
         files: list[str] = []  # To save the input files
         atoms_flag: bool = False  # Check if there are atoms defeind
         files_flag: bool = False  # Check if there are files defeind
-        style_flage: bool = False  # Check if there is style keyword
+        style_flage: bool = False  # Check if there is `style` keyword
         with open(fname, 'r') as f:
             while True:
                 line = f.readline()
@@ -119,8 +119,8 @@ class Prompts:
         if style and style in l_styles:
             pass
         else:
-            exit(f'{bcolors.FAIL}\tError! The selected style is not '
-                 f'valid, choose from: {l_styles}{bcolors.ENDC}\n'
+            exit(f'{bcolors.FAIL}\tError! The selected style: `{style}`'
+                 f' is not valid, choose from: {l_styles}{bcolors.ENDC}\n'
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return style
 
@@ -187,7 +187,7 @@ class Prompts:
         return fname, jname
 
     def get_atoms(self,
-                  atoms: str  # The atoms name from atoms line of the info file
+                  atoms: str  # Atoms name from `atoms` line of the info file
                   ) -> list[str]:
         """get the defeind atoms in the info fils"""
         atom_list: list[str]  # To return as a list

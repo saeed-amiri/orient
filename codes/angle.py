@@ -155,8 +155,8 @@ class Angle:
         return vector / np.linalg.norm(vector)
 
     def angle_between_vecs(self,
-                           v1: np.array,  # Vector from O to H
-                           v2: np.array  # Vector from O to H
+                           v1: np.array,  # vector from oxygen towards hydrogen
+                           v2: np.array  # vector from oxygen towards hydrogen
                            ) -> float:
         """ Returns the angle in radians between vectors 'v1' and 'v2'"""
         v1_u: np.array = self.unit_vector(v1)
