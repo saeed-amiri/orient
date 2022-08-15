@@ -25,22 +25,26 @@ class Doc:
 class RadiusGyration:
     """find the gyration of the input"""
     def __init__(self,
-                 obj: relmp.ReadData,
-                 files: get_prompt.Prompts) -> None:
+                 obj: relmp.ReadData,  # All the infos in the data file
+                 files: get_prompt.Prompts  # All the infos in the prompt file
+                 ) -> None:
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tGetting chain molecules{bcolors.ENDC}')
         self.gyration(obj, files)
 
     def gyration(self,
-                 obj: relmp.ReadData,
-                 files: get_prompt.Prompts) -> None:
+                 obj: relmp.ReadData,  # All the infos in the data file
+                 files: get_prompt.Prompts  # All the infos in the prompt file
+                 ) -> None:
         chains: pd.DataFrame  # Coordinates for all the atoms in the chain
-        chains = self.get_chain(obj.Atoms_df, files)
+        atoms_type: dict[str, int]
+        chains, atoms_type = self.get_chain(obj.Atoms_df, files)
+        self.radius_geyration(chains, files.tails, atoms_type)
 
     def get_chain(self,
                   df: pd.DataFrame,  # All the atoms in system
                   files: get_prompt.Prompts  # Data in the info file
-                  ) -> pd.DataFrame:
+                  ) -> tuple[pd.DataFrame, dict]:
         """get the atoms from datafile based on the type"""
         atom_types: dict[str, int]  # Name and type of each atom in the chain
         chains: pd.DataFrame  # Coordinates for all the atoms in the chain
@@ -48,7 +52,7 @@ class RadiusGyration:
         atom_types = self.get_types(param.df, files.atoms)
         chains = self.chain_df(atom_types, df)
         del df
-        return chains
+        return chains, atom_types
 
     def get_types(self,
                   df: pd.DataFrame,  # All the atoms coords in the system
@@ -82,3 +86,24 @@ class RadiusGyration:
         chains.sort_values(by=['atom_id'], axis=0, inplace=True)
         del df
         return chains
+
+    def radius_geyration(self,
+                         df: pd.DataFrame,  # Data of all the chains
+                         tails: str,  # Name of the head and tail atom in chain
+                         atoms_type: dict[str, int]  # Name & type of each atom
+                         ) -> None:
+        """calculate the radius of the gyration"""
+        mols: list[int]  # unique list of the molecules id (each chain id)
+        mols = list(df['mol'])
+        mols = list(set(mols))
+        tail_type: int  # Type of the head and tail atoms
+        tail_type = atoms_type[tails]
+        print(tail_type)
+        for mol in mols[0:1]:
+            self.get_gyration(df.loc[df['mol'] == mol])
+
+    def get_gyration(self,
+                     df: pd.DataFrame  # infos for each mol (chain)
+                     ) -> None:
+        """calculate radius of gyration for each chain (molecule)"""
+        print(df)
