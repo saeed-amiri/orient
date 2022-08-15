@@ -1,6 +1,7 @@
 import get_prompt
 import read_lmp_data as relmp
 import angle
+import gyration
 
 
 class Doc:
@@ -28,4 +29,5 @@ if files.style == 'angle':
     data = relmp.ReadData(files.fname)
     water = angle.Angle(data, files)
 elif files.style == 'gyration':
-    pass
+    data = relmp.ReadData(files.fname)
+    r_gyration = gyration.RadiusGyration(data, files)
