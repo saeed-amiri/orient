@@ -80,7 +80,7 @@ class Prompts:
 
     def read_infos(self,
                    fname: str  # The input file from prompt
-                   ) -> list[typing.Any]:
+                   ) -> dict[str, typing.Any]:
         """read info file to get the information for the calculation"""
         line: str  # Each line of the file
         style: str  # The style of the calculation
@@ -97,8 +97,8 @@ class Prompts:
                 line = f.readline()
                 if line.strip().startswith('#'):
                     pass
-                elif line.strip().startswith('data') or \
-                     line.strip().startswith('json'):
+                elif line.strip().startswith('data')\
+                     or line.strip().startswith('json'):
                     f_i = line.split('=')[1].strip()
                     files.append(f_i)
                 elif line.strip().startswith('style'):
