@@ -39,9 +39,10 @@ class RadiusGyration:
         param = rejs.ReadJson(files.jname)  # Name of atoms in the JSON file
         atom_types: dict[str, int]  # Name and type of each atom in the chain
         atom_types = self.get_types(param.df, files.atoms)
+        self.chain_df(atom_types, df)
 
     def get_types(self,
-                  df: pd.DataFrame,  # All the atoms types in system
+                  df: pd.DataFrame,  # All the atoms coords in the system
                   atoms: list[str]  # Name of the atoms of the chian
                   ) -> dict[str, int]:
         """find the int number for each atom in the json file"""
@@ -54,3 +55,20 @@ class RadiusGyration:
         type_dict: dict[str, int]  # Name and type of each atom
         type_dict = {k: v for k, v in zip(df['name'], df['typ']) if k in atoms}
         return type_dict
+
+    def chain_df(self,
+                 atoms_types: dict[str, int],  # Wanted atoms name and type
+                 df: pd.DataFrame  # All the atoms coords in the system
+                 ) -> pd.DataFrame:
+        """get the atoms coords for all the chain"""
+        i_df: pd.DataFrame  # data for each type
+        df_list: list[pd.DataFrame] = []  # append dataframe for each atom
+        chains: pd.DataFrame  # Main data to return
+        name: str  # Name of each atom
+        typ: int  # Type of each atoms
+        for name, typ in atoms_types.items():
+            i_df = df.loc[df['typ'] == typ]
+            df_list.append(i_df)
+        chains = pd.concat(df_list)
+        chains.sort_values(by=['atom_id'], axis=0, inplace=True)
+        return chains
