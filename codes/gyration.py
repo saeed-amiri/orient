@@ -98,12 +98,16 @@ class RadiusGyration:
         mols = list(set(mols))
         tail_type: int  # Type of the head and tail atoms
         tail_type = atoms_type[tails]
-        print(tail_type)
         for mol in mols[0:1]:
-            self.get_gyration(df.loc[df['mol'] == mol])
+            self.get_gyration(df.loc[df['mol'] == mol], tail_type)
 
     def get_gyration(self,
-                     df: pd.DataFrame  # infos for each mol (chain)
+                     df: pd.DataFrame,  # infos for each mol (chain)
+                     tail_type: int  # type of the head and tail atoms
                      ) -> None:
         """calculate radius of gyration for each chain (molecule)"""
-        print(df)
+        tails_list: list[tuple[float, float, float]]  # Coords of the tails
+        tails_list = []
+        for i, atom in df.iterrows():
+            if atom['typ'] == tail_type:
+                tails_list.append((atom['x'], atom['y'], atom['z']))
