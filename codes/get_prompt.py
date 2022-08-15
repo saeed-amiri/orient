@@ -1,5 +1,6 @@
 import os
 import sys
+import typing
 from colors_text import TextColor as bcolors
 
 
@@ -18,6 +19,10 @@ class Doc:
         angle: Calculate the HOH angle for water molecules.
         gyration: Calculate the gyration radius of the decane or
         surfactants.
+    if style is gyration then there must be a key:
+        tails = CH3
+        it is needed for calculating the radius of gyration and it must
+        be in the `atoms` key
     JSON file MUST have JSON extension, and the combination script wr-
     ites it. It contains the name, type, and mass of each atom.
     The data file must have one of the following extensions:
@@ -36,6 +41,7 @@ class Prompts:
 
     def get_infos(self) -> None:
         """read the prompt file to get initial information"""
+        info_dict: dict[str, typing.Any]  # Infos in the  prompt file
         fname: str  # Name of the input file
         style: str  # The style of the calculation
         files: list[str]  # The input files
@@ -43,7 +49,9 @@ class Prompts:
         fname = self.check_infos()
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tChecking the input file: `{fname}`{bcolors.ENDC}')
-        style, files, atoms = self.read_infos(fname)
+        info_dict = self.read_infos(fname)
+        style, files = info_dict['style'], info_dict['files']
+        self.tails, atoms = info_dict['tails'], info_dict['atoms']
         self.fname, self.jname = self.check_extensions(files)
         self.style = self.get_style(style)
         self.atoms = self.get_atoms(atoms)
@@ -72,28 +80,38 @@ class Prompts:
 
     def read_infos(self,
                    fname: str  # The input file from prompt
-                   ) -> tuple[str, list[str], str]:
+                   ) -> list[typing.Any]:
         """read info file to get the information for the calculation"""
         line: str  # Each line of the file
         style: str  # The style of the calculation
         atoms: str  # The name of the atoms to be consider
+        tails: str = None  # The name of the tail atom for radius of gyration
         files: list[str] = []  # To save the input files
+        return_dict: dict[str, typing.Any] = dict()  # Return keys and values
         atoms_flag: bool = False  # Check if there are atoms defeind
         files_flag: bool = False  # Check if there are files defeind
         style_flage: bool = False  # Check if there is `style` keyword
+        tails_flage: bool = False  # Check if there is `tails` keyword
         with open(fname, 'r') as f:
             while True:
                 line = f.readline()
-                if line.strip().startswith('data') or \
-                   line.strip().startswith('json'):
+                if line.strip().startswith('#'):
+                    pass
+                elif line.strip().startswith('data') or \
+                     line.strip().startswith('json'):
                     f_i = line.split('=')[1].strip()
                     files.append(f_i)
                 elif line.strip().startswith('style'):
                     style = line.split('=')[1].strip()
+                    return_dict['style'] = style
                     style_flage = True
                 elif line.strip().startswith('atoms'):
                     atoms = line.split('=')[1].strip()
+                    return_dict['atoms'] = atoms
                     atoms_flag = True
+                elif line.strip().startswith('tails'):
+                    tails = line.split('=')[1].strip()
+                    tails_flage = True
                 else:
                     if line.strip():
                         print(f'\t{bcolors.WARNING}Warning: Undefined '
@@ -108,7 +126,19 @@ class Prompts:
                      f'{bcolors.ENDC}\n'
                      f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         files = self.check_files(files)
-        return style, files, atoms
+        return_dict['files'] = files
+        if style == 'gyration':
+            if not tails_flage:
+                exit(f'\t{bcolors.FAIL}Error! Name of the tail atom(s) needed.'
+                     f'{bcolors.ENDC}\n'
+                     f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
+            elif tails not in atoms:
+                exit(f'\t{bcolors.FAIL}Error! Name of the tail atom(s) '
+                     f'did not found in `atoms`.'
+                     f'{bcolors.ENDC}\n'
+                     f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
+        return_dict['tails'] = tails
+        return return_dict
 
     def get_style(self,
                   style: str  # The style written in the info file
