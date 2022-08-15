@@ -29,17 +29,26 @@ class RadiusGyration:
                  files: get_prompt.Prompts) -> None:
         print(f'{bcolors.OKCYAN}{self.__class__.__name__}:\n'
               f'\tGetting chain molecules{bcolors.ENDC}')
-        self.get_chain(obj.Atoms_df, files)
+        self.gyration(obj, files)
+
+    def gyration(self,
+                 obj: relmp.ReadData,
+                 files: get_prompt.Prompts) -> None:
+        chains: pd.DataFrame  # Coordinates for all the atoms in the chain
+        chains = self.get_chain(obj.Atoms_df, files)
 
     def get_chain(self,
                   df: pd.DataFrame,  # All the atoms in system
                   files: get_prompt.Prompts  # Data in the info file
-                  ) -> None:
+                  ) -> pd.DataFrame:
         """get the atoms from datafile based on the type"""
-        param = rejs.ReadJson(files.jname)  # Name of atoms in the JSON file
         atom_types: dict[str, int]  # Name and type of each atom in the chain
+        chains: pd.DataFrame  # Coordinates for all the atoms in the chain
+        param = rejs.ReadJson(files.jname)  # Name of atoms in the JSON file
         atom_types = self.get_types(param.df, files.atoms)
-        self.chain_df(atom_types, df)
+        chains = self.chain_df(atom_types, df)
+        del df
+        return chains
 
     def get_types(self,
                   df: pd.DataFrame,  # All the atoms coords in the system
@@ -71,4 +80,5 @@ class RadiusGyration:
             df_list.append(i_df)
         chains = pd.concat(df_list)
         chains.sort_values(by=['atom_id'], axis=0, inplace=True)
+        del df
         return chains
