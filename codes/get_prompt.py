@@ -85,7 +85,7 @@ class Prompts:
         line: str  # Each line of the file
         style: str  # The style of the calculation
         atoms: str  # The name of the atoms to be consider
-        tails: str = None  # The name of the tail atom for radius of gyration
+        tails: str = 'None'  # The name of the tail atom for radius of gyration
         files: list[str] = []  # To save the input files
         return_dict: dict[str, typing.Any] = dict()  # Return keys and values
         atoms_flag: bool = False  # Check if there are atoms defeind
@@ -97,8 +97,8 @@ class Prompts:
                 line = f.readline()
                 if line.strip().startswith('#'):
                     pass
-                elif line.strip().startswith('data')\
-                     or line.strip().startswith('json'):
+                elif (line.strip().startswith('data') or
+                      line.strip().startswith('json')):
                     f_i = line.split('=')[1].strip()
                     files.append(f_i)
                 elif line.strip().startswith('style'):
