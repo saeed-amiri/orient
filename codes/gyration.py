@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
-from colors_text import TextColor as bcolors
-import read_lmp_data as relmp
-import read_json as rejs
 import get_prompt
+import read_json as rejs
+import read_lmp_data as relmp
+from colors_text import TextColor as bcolors
 
 
 class Doc:

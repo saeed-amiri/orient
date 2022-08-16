@@ -55,10 +55,12 @@ class Prompts:
         self.fname, self.jname = self.check_extensions(files)
         self.style = self.get_style(style)
         self.atoms = self.get_atoms(atoms)
-        print(f'{bcolors.OKCYAN}\tstyle: `{self.style}`\n'
-              f'\tdata: `{self.fname}`\n'
+        print(f'{bcolors.OKCYAN}'
+              f'\tstyle:\t  `{self.style}`\n'
+              f'\tdata:\t  `{self.fname}`\n'
               f'\tparamter: `{self.jname}`\n'
-              f'\tatoms: `{" & ".join(self.atoms)}`{bcolors.ENDC}\n')
+              f'\tatoms:\t  `{" & ".join(self.atoms)}`\n'
+              f'\ttails:\t  `{self.tails}`{bcolors.ENDC}\n')
 
     def check_infos(self) -> str:
         """read the prompt file to get initial information"""
@@ -115,7 +117,7 @@ class Prompts:
                 else:
                     if line.strip():
                         print(f'\t{bcolors.WARNING}Warning: Undefined '
-                              f'keyword: `{line}`, Ignored!{bcolors.ENDC}')
+                              f'keyword: `{line}`, Ignored!{bcolors.ENDC}\n')
                 if not line:
                     break
         if files:
@@ -132,10 +134,9 @@ class Prompts:
                 exit(f'\t{bcolors.FAIL}Error! Name of the tail atom(s) needed.'
                      f'{bcolors.ENDC}\n'
                      f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
-            elif tails not in atoms:
-                exit(f'\t{bcolors.FAIL}Error! Name of the tail atom(s) '
-                     f'did not found in `atoms`.'
-                     f'{bcolors.ENDC}\n'
+            elif tails not in atoms.strip().split(' '):
+                exit(f'\t{bcolors.FAIL}Error! `tails` atom(s): `{tails}`'
+                     f' did not found in atoms: `{atoms}`.{bcolors.ENDC}\n'
                      f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         return_dict['tails'] = tails
         return return_dict
@@ -165,10 +166,10 @@ class Prompts:
                  f'{bcolors.OKGREEN}\n{Doc.__doc__}{bcolors.ENDC}\n')
         elif nfiles > 2:
             print(f'\t{bcolors.WARNING}Warning: Too many input files!\n'
-                  f'\t{f_list[2:]} wont be process\n')
+                  f'\t`{f_list[2:]}` wont be process\n')
         else:
             pass
-        self.check_exist(f_list)
+        self.check_exist(f_list)  # Check if the files are there!
         return f_list[:2]
 
     def check_exist(self,
