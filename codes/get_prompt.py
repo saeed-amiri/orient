@@ -60,7 +60,8 @@ class Prompts:
               f'\tdata:\t  `{self.fname}`\n'
               f'\tparamter: `{self.jname}`\n'
               f'\tatoms:\t  `{" & ".join(self.atoms)}`\n'
-              f'\ttails:\t  `{self.tails}`{bcolors.ENDC}\n')
+              f'\ttails:\t  `{self.tails}`'
+              f'{bcolors.ENDC}\n')
 
     def check_infos(self) -> str:
         """read the prompt file to get initial information"""
