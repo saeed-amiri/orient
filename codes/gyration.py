@@ -18,6 +18,7 @@ class Doc:
 
     Input:
         Polymer chain coordinates from read_lammps
+    LAMMPS also calculate this property, but in a bit different way!
 
     """
 
